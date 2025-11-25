@@ -1,0 +1,37 @@
+name: CI - 环境校验+测试+代码规范检查
+# 补充触发事件（复制这段到文件开头）
+on:
+  push:
+    branches: [develop, main]
+  pull_request:
+    branches: [develop, main]
+# 原有jobs等内容保持不变
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 拉取项目代码
+        uses: actions/checkout@v4
+
+      - name: 构建Docker校验镜像
+        run: docker build -t llm-env:ci .
+
+      - name: 校验依赖安装
+        run: |
+          docker run --rm llm-env:ci \
+            conda run -n llm-env pip list | grep -E "pytorch|transformers|pytest"
+
+      - name: 运行pytest测试
+        run: |
+          docker run --rm llm-env:ci \
+            conda run -n llm-env pytest tests/ -v
+
+      - name: 代码Lint检查
+        run: |
+          docker run --rm llm-env:ci \
+            conda run -n llm-env ruff check . --output-format=github
+
+      - name: 格式化合规校验
+        run: |
+          docker run --rm llm-env:ci conda run -n llm-env black --check .
+          docker run --rm llm-env:ci conda run -n llm-env isort --check .
