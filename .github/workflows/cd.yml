@@ -1,0 +1,30 @@
+# 工作流名称
+name: CD - 自动构建并推送Docker镜像
+# 触发条件：仅推送到main分支时执行（正式版本发布）
+on:
+  push:
+    branches: [main]
+# 定义工作任务
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      # 步骤1：拉取main分支正式代码
+      - name: 拉取正式分支代码
+        uses: actions/checkout@v4
+      # 步骤2：构建正式版Docker镜像
+      - name: 构建正式镜像
+        run: docker build -f docker/Dockerfile -t llm-env:ci .
+      # 步骤3：登录Docker Hub（安全读取Secrets）
+      - name: 登录Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_HUB_USER }} -p ${{ secrets.DOCKER_HUB_PWD }}
+      # 步骤4：镜像打标签（自动生成递增版本号）
+      - name: 镜像打标签
+        run: |
+          IMAGE_TAG=${{ secrets.DOCKER_HUB_USER }}/llm-salad-project:v${{ github.run_number }}
+          docker tag llm-env:latest $IMAGE_TAG
+      # 步骤5：推送镜像到Docker Hub
+      - name: 推送镜像到Docker Hub
+        run: |
+          IMAGE_TAG=${{ secrets.DOCKER_HUB_USER }}/llm-salad-project:v${{ github.run_number }}
+          docker push $IMAGE_TAG
