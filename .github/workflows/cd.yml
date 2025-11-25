@@ -14,7 +14,7 @@ jobs:
         uses: actions/checkout@v4
       # 步骤2：构建正式版Docker镜像
       - name: 构建正式镜像
-        run: docker build -f docker/Dockerfile -t llm-env:ci .
+        run: docker build -f docker/Dockerfile -t llm-env:latest .
       # 步骤3：登录Docker Hub（安全读取Secrets）
       - name: 登录Docker Hub
         run: docker login -u ${{ secrets.DOCKER_HUB_USER }} -p ${{ secrets.DOCKER_HUB_PWD }}
