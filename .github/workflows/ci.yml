@@ -14,7 +14,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: 构建Docker校验镜像
-         run: docker build -f docker/Dockerfile -t llm-env:ci .
+        run: docker build -f docker/Dockerfile -t llm-env:ci .
 
       - name: 校验依赖安装
         run: |
@@ -35,4 +35,5 @@ jobs:
         run: |
           docker run --rm llm-env:ci conda run -n llm-env black --check .
           docker run --rm llm-env:ci conda run -n llm-env isort --check .
+
 
