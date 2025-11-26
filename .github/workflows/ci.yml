@@ -18,23 +18,21 @@ jobs:
 
       - name: 校验 Python 包可 import（torch 2.6.0+cu124）
         run: |
-          docker run --rm -w /workspace llm-env:ci \
-            python - <<'PY'
+          docker run --rm -w /workspace llm-env:ci python -c "
 import importlib, sys
-names = ["torch","transformers","pytest","ruff","black"]
+names = ['torch','transformers','pytest','ruff','black']
 for n in names:
     try:
         m = importlib.import_module(n)
-        print(f"{n} imported: {getattr(m, '__version__', 'version unknown')}")
+        print(f'{n} imported: {getattr(m, \"__version__\", \"version unknown\")}')
     except Exception as e:
-        print(f"{n} import FAILED: {e}")
+        print(f'{n} import FAILED: {e}')
         sys.exit(2)
-PY
+"
 
       - name: 校验 PyTorch 版本与 CUDA（cu124）
         run: |
-          docker run --rm -w /workspace llm-env:ci \
-            python -c "import torch; print(f'PyTorch: {torch.__version__}'); print(f'CUDA: {torch.version.cuda}')"
+          docker run --rm -w /workspace llm-env:ci python -c "import torch; print(f'PyTorch: {torch.__version__}'); print(f'CUDA: {torch.version.cuda}')"
 
       - name: 运行 pytest
         run: |
