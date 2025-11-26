@@ -1,5 +1,4 @@
-FROM registry.cn-hangzhou.aliyuncs.com/pytorch/pytorch:2.6.0-cuda12.4-cudnn8-devel
-
+FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
 ENV DEBIAN_FRONTEND=noninteractive \
     TZ=Asia/Shanghai \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
@@ -7,13 +6,17 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONUNBUFFERED=1
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    git wget curl ca-certificates vim build-essential && \
+    python3 python3-pip python3-venv git wget curl ca-certificates build-essential \
+    libglib2.0-0 libsm6 libxrender1 libxext6 libgl1 && \
+    ln -s /usr/bin/python3 /usr/bin/python || true && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /workspace
 
 COPY requirements.txt /tmp/
-RUN pip install --no-cache-dir \
+
+RUN pip install \
+    --extra-index-url https://download.pytorch.org/whl/cu118 \
     -i https://pypi.tuna.tsinghua.edu.cn/simple \
     -r /tmp/requirements.txt
 
