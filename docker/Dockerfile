@@ -17,7 +17,9 @@ WORKDIR /workspace
 
 COPY requirements.txt /tmp/requirements.txt
 RUN python -m pip install --upgrade pip && \
-    pip install --no-cache-dir -r /tmp/requirements.txt
+    pip install --no-cache-dir -r /tmp/requirements.txt \
+    --index-url https://download.pytorch.org/whl/cu121 \  
+    --extra-index-url https://pypi.tuna.tsinghua.edu.cn/simple  
 
 COPY . /workspace
 
