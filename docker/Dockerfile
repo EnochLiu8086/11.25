@@ -17,10 +17,10 @@ WORKDIR /workspace
 
 COPY requirements.txt /tmp/
 RUN pip install --no-cache-dir \
-    --index-url https://download.pytorch.org/whl/cu124 \  # 优先拉取cu124版本的torch
-    --extra-index-url https://pypi.tuna.tsinghua.edu.cn/simple \  # 其他依赖用国内源
+    --index-url https://download.pytorch.org/whl/cu124 \  
+    --extra-index-url https://pypi.tuna.tsinghua.edu.cn/simple \  
     -r /tmp/requirements.txt
-    
+
 COPY . /workspace
 
 ENV HF_HOME=/workspace/.cache/huggingface \
