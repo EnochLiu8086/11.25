@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.4.0-cudnn8-devel-ubuntu22.04
+FROM registry.cn-hangzhou.aliyuncs.com/nvidia/cuda:12.4.0-cudnn8-devel-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive \
     TZ=Asia/Shanghai \
@@ -17,8 +17,7 @@ WORKDIR /workspace
 
 COPY requirements.txt /tmp/
 RUN pip install --no-cache-dir \
-    --index-url https://download.pytorch.org/whl/cu124 \ 
-    --extra-index-url https://pypi.tuna.tsinghua.edu.cn/simple \
+    -i https://pypi.tuna.tsinghua.edu.cn/simple \
     -r /tmp/requirements.txt
 
 COPY . /workspace
