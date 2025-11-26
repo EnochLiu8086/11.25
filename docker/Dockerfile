@@ -1,4 +1,4 @@
-FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
+﻿FROM nvidia/cuda:12.4.0-cudnn8-devel-ubuntu22.04
 ENV DEBIAN_FRONTEND=noninteractive \
     TZ=Asia/Shanghai \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
@@ -15,8 +15,8 @@ WORKDIR /workspace
 
 COPY requirements.txt /tmp/
 
-RUN pip install \
-    --extra-index-url https://download.pytorch.org/whl/cu118 \
+RUN pip install --no-cache-dir \
+    --index-url https://download.pytorch.org/whl/cu124 \
     -i https://pypi.tuna.tsinghua.edu.cn/simple \
     -r /tmp/requirements.txt
 
