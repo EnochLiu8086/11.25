@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.4.0-cudnn8-devel-ubuntu22.04
+FROM nvidia/cuda:12.4.0-cudnn9-devel-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive \
     TZ=Asia/Shanghai \
@@ -15,12 +15,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /workspace
 
-COPY requirements.txt /tmp/requirements.txt
-RUN python -m pip install --upgrade pip && \
-    pip install --no-cache-dir -r /tmp/requirements.txt \
-    -f https://download.pytorch.org/whl/cu124/torch_stable.html \
-    -i https://pypi.tuna.tsinghua.edu.cn/simple
-
+COPY requirements.txt /tmp/
+RUN pip install --no-cache-dir \
+    --index-url https://download.pytorch.org/whl/cu124 \  # 优先拉取cu124版本的torch
+    --extra-index-url https://pypi.tuna.tsinghua.edu.cn/simple \  # 其他依赖用国内源
+    -r /tmp/requirements.txt
+    
 COPY . /workspace
 
 ENV HF_HOME=/workspace/.cache/huggingface \
